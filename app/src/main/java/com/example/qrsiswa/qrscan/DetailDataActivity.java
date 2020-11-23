@@ -59,7 +59,7 @@ public class DetailDataActivity extends AppCompatActivity {
             public void onNext(Map<String, Object> map) {
                 dialog.dismiss();
 
-                if (Objects.equals(map.get("statusCode"), 404)){
+                if (Objects.equals(map.get("statusCode"), 404.0)){
                     Log.d("pinter", "response data = " + map);
 
                     AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(DetailDataActivity.this);

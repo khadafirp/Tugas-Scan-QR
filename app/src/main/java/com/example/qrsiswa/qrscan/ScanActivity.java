@@ -6,6 +6,7 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -126,40 +127,47 @@ public class ScanActivity extends AppCompatActivity implements ZXingScannerView.
 
             @Override
             public void onNext(Map<String, Object> map) {
+                Log.d("pinter", map.toString());
                 dialog.dismiss();
-                if (Objects.equals(map.get("statucCode"), 404)){
-                    Log.d("pinter", "response data = " + map);
+                try {
+                    if (String.valueOf(map.get("statusCode")).equals("404.0")) {
+                        Log.d("pinter", "response data = " + map);
 
-                    AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(ScanActivity.this);
-                    View view = getLayoutInflater().inflate(R.layout.popup_layout, null);
+                        AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(ScanActivity.this);
+                        View view = getLayoutInflater().inflate(R.layout.popup_layout, null);
 
-                    ImageView gambar = view.findViewById(R.id.imageView);
-                    TextView isi = view.findViewById(R.id.isiDetail);
-                    Button dfOk = view.findViewById(R.id.btnDismiss);
-                    dialogbuilder.setView(view);
+                        ImageView gambar = view.findViewById(R.id.imageView);
+                        TextView isi = view.findViewById(R.id.isiDetail);
+                        Button dfOk = view.findViewById(R.id.btnDismiss);
+                        dialogbuilder.setView(view);
 
-                    gambar.setImageResource(R.drawable.ic_not_found);
-                    isi.setText(Objects.requireNonNull(map.get("message")).toString());
+                        gambar.setImageResource(R.drawable.ic_not_found);
+                        isi.setText(Objects.requireNonNull(map.get("message")).toString());
 
-                    final AlertDialog alertDialog = dialogbuilder.create();
+                        final AlertDialog alertDialog = dialogbuilder.create();
 //                      alertDialog.getWindow().getAttributes().windowAnimations = R.style.DialogStyle;
-                    alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                    alertDialog.show();
+                        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        alertDialog.show();
 
-                    dfOk.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            alertDialog.dismiss();
-                        }
-                    });
-                }else{
-                    Log.d("pinter", "response data = " + map);
+                        dfOk.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                alertDialog.dismiss();
+                            }
+                        });
 
-                    Map<String, Objects> mapDua = ((Map<String, Objects>) map.get("body"));
+                    } else {
+                        Log.d("pinter", "response data = " + map);
 
-                    Intent intent = new Intent(ScanActivity.this, DetailDataActivity.class);
-                    intent.putExtra("nis", String.valueOf(mapDua.get("nis")));
-                    startActivity(intent);
+                        Map<String, Objects> mapDua = ((Map<String, Objects>) map.get("body"));
+
+                        Intent intent = new Intent(ScanActivity.this, DetailDataActivity.class);
+                        intent.putExtra("nis", String.valueOf(mapDua.get("nis")));
+                        intent.putExtra("perbandingan", "data ada");
+                        startActivity(intent);
+                    }
+                }catch (Exception e){
+                    Log.d("pinter", e.getMessage());
                 }
             }
 
